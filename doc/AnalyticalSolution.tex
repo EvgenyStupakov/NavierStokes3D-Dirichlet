@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, geometry}
+\geometry{margin=1in}
+\title{Smooth 3D Velocity Field via Dirichlet Series under Impulsive Forcing}
+\author{Evgeny Stupakov}
+\date{2026}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+We consider a special case of the 3D Navier--Stokes equations for an incompressible fluid 
+on a cubic domain $[0,L]^3$ with Dirichlet boundary conditions ($\mathbf{u} = 0$ on the boundaries). 
+The goal is to construct an analytical velocity field that reacts to a short impulsive force and 
+then decays smoothly.
+
+\section*{Problem Statement}
+The simplified governing equation for the velocity field $\mathbf{u} = (u,v,w)$ is:
+
+\[
+\frac{\partial \mathbf{u}}{\partial t} = \nu \nabla^2 \mathbf{u} + \mathbf{f}(x,y,z,t),
+\quad \mathbf{u}|_{\partial [0,L]^3} = 0
+\]
+
+where $\nu$ is the kinematic viscosity, and $\mathbf{f}$ is an external impulsive force.
+
+\section*{Analytical Solution via Dirichlet Series}
+We expand the velocity field in a sine series satisfying the Dirichlet boundaries:
+
+\[
+\phi_{nml}(x,y,z) = \sin\left(\frac{n\pi x}{L}\right)
+                      \sin\left(\frac{m\pi y}{L}\right)
+                      \sin\left(\frac{l\pi z}{L}\right), \quad n,m,l = 1,2,\dots
+\]
+
+with Laplacian eigenvalues:
+
+\[
+\lambda_{nml} = \frac{\pi^2}{L^2}(n^2 + m^2 + l^2)
+\]
+
+The velocity components are expressed as:
+
+\[
+\begin{aligned}
+u(x,y,z,t) &= \sum_{n,m,l} a_{nml}(t) \, \sin\frac{n\pi x}{L} \, \sin\frac{m\pi y}{L} \, \sin\frac{l\pi z}{L} \\
+v(x,y,z,t) &= \sum_{n,m,l} a_{nml}(t) \, \sin\frac{m\pi x}{L} \, \sin\frac{l\pi y}{L} \, \sin\frac{n\pi z}{L} \\
+w(x,y,z,t) &= \sum_{n,m,l} a_{nml}(t) \, \sin\frac{l\pi x}{L} \, \sin\frac{n\pi y}{L} \, \sin\frac{m\pi z}{L}
+\end{aligned}
+\]
+
+\section*{Time Evolution of Coefficients}
+Each coefficient $a_{nml}(t)$ satisfies the ODE:
+
+\[
+\frac{d a_{nml}}{dt} = -\nu \lambda_{nml} a_{nml} + F_{nml}(t)
+\]
+
+where $F_{nml}(t)$ is the projection of the external force on the corresponding mode:
+
+\[
+F_{nml}(t) = \int_0^L \int_0^L \int_0^L f(x,y,z,t) \, \phi_{nml}(x,y,z) \, dx\,dy\,dz
+\]
+
+For a short impulsive force, $F_{nml}(t) \neq 0$ only for $t \le t_0$, and $F_{nml}(t) = 0$ afterwards. 
+The solution of the ODE is:
+
+\[
+\boxed{
+a_{nml}(t) = \frac{F_0}{n m l \, \lambda_{nml}} 
+\left( 1 - e^{-\nu \lambda_{nml} \min(t,t_0)} \right) 
+e^{-\nu \lambda_{nml} \max(0, t-t_0)}
+}
+\]
+
+\section*{Physical Interpretation}
+\begin{itemize}
+    \item During $0 \le t \le t_0$, the impulsive force accelerates the field, producing a "velocity explosion".
+    \item After $t > t_0$, all modes decay exponentially with factor $\exp(-\nu \lambda_{nml} (t-t_0))$.
+    \item The velocity field remains smooth and satisfies Dirichlet boundary conditions at all times.
+\end{itemize}
+
+\section*{Numerical Illustration}
+The Python script `simulation.py` computes the velocity modulus:
+
+\[
+|\mathbf{u}(x,y,z,t)| = \sqrt{u^2 + v^2 + w^2}
+\]
+
+for a small grid and prints the values to the console at each time step, 
+illustrating the initial acceleration and subsequent decay.
+
+\section*{Conclusion}
+Analytical solution for a 3D velocity field under an impulsive external force using Dirichlet sine series. 
+The solution explicitly shows the acceleration ("explosion") due to the force and the exponential decay afterwards. 
+This provides a reproducible model suitable for educational or computational demonstrations.
+
+\end{document}
+
