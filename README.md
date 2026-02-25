@@ -3,6 +3,9 @@
 Python script simulates a 3D velocity field in a cubic domain [0,L]^3 
 with Dirichlet boundary conditions under a short impulsive force.
 
+Preprint (DOI): https://zenodo.org/records/18682741
+This repository contains the full analytical derivation and proof.
+
 ## How to use
 
 1. Clone repository
